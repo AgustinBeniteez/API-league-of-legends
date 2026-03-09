@@ -11,8 +11,10 @@ app.use(express.json());
 // Cache para los datos
 let lolCache = null;
 let tftCache = null;
+let itemsCache = null;
 let lastLolUpdate = null;
 let lastTftUpdate = null;
+let lastItemsUpdate = null;
 
 const getLatestVersion = async () => {
     const response = await axios.get('https://ddragon.leagueoflegends.com/api/versions.json');
@@ -26,8 +28,7 @@ const fetchLolChampions = async () => {
         
         const championsData = response.data.data;
         const championsArray = Object.values(championsData).map(champion => ({
-            id: champion.id,
-            key: champion.key,
+            id: champion.key,
             name: champion.name,
             title: champion.title,
             blurb: champion.blurb,
@@ -48,6 +49,40 @@ const fetchLolChampions = async () => {
         return lolCache;
     } catch (error) {
         console.error('Error fetching LoL champions:', error.message);
+        throw error;
+    }
+};
+
+const fetchItems = async () => {
+    try {
+        const version = await getLatestVersion();
+        const response = await axios.get(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/item.json`);
+        
+        const itemsData = response.data.data;
+        const itemsArray = Object.values(itemsData).map(item => ({
+            id: item.id,
+            name: item.name,
+            description: item.description,
+            plaintext: item.plaintext,
+            into: item.into,
+            from: item.from,
+            image: `https://ddragon.leagueoflegends.com/cdn/${version}/img/item/${item.image.full}`,
+            gold: item.gold,
+            tags: item.tags,
+            maps: item.maps,
+            stats: item.stats
+        }));
+
+        itemsCache = {
+            version,
+            count: itemsArray.length,
+            items: itemsArray
+        };
+        lastItemsUpdate = new Date();
+        
+        return itemsCache;
+    } catch (error) {
+        console.error('Error fetching items:', error.message);
         throw error;
     }
 };
@@ -94,6 +129,18 @@ const ensureLolData = async (req, res, next) => {
     next();
 };
 
+const ensureItemsData = async (req, res, next) => {
+    const ONE_HOUR = 60 * 60 * 1000;
+    if (!itemsCache || (new Date() - lastItemsUpdate > ONE_HOUR)) {
+        try {
+            await fetchItems();
+        } catch (error) {
+            return res.status(500).json({ error: 'Failed to fetch items data' });
+        }
+    }
+    next();
+};
+
 // Middleware para asegurar que tenemos datos de TFT
 const ensureTftData = async (req, res, next) => {
     const ONE_HOUR = 60 * 60 * 1000;
@@ -111,11 +158,9 @@ app.get('/lol/champions', ensureLolData, (req, res) => {
     res.json(lolCache);
 });
 
-app.get('/lol/champions/:id', ensureLolData, (req, res) => {
+app.get('/lol/champion/:id', ensureLolData, (req, res) => {
     const { id } = req.params;
-    const champion = lolCache.champions.find(
-        c => c.id.toLowerCase() === id.toLowerCase() || c.key === id
-    );
+    const champion = lolCache.champions.find(c => c.id === id || c.name.toLowerCase() === id.toLowerCase());
 
     if (!champion) {
         return res.status(404).json({ error: 'LoL champion not found' });
@@ -124,15 +169,28 @@ app.get('/lol/champions/:id', ensureLolData, (req, res) => {
     res.json(champion);
 });
 
+app.get('/lol/items', ensureItemsData, (req, res) => {
+    res.json(itemsCache);
+});
+
+app.get('/lol/item/:id', ensureItemsData, (req, res) => {
+    const { id } = req.params;
+    const item = itemsCache.items.find(i => i.id === id || i.name.toLowerCase() === id.toLowerCase());
+
+    if (!item) {
+        return res.status(404).json({ error: 'Item not found' });
+    }
+
+    res.json(item);
+});
+
 app.get('/tft/champions', ensureTftData, (req, res) => {
     res.json(tftCache);
 });
 
-app.get('/tft/champions/:id', ensureTftData, (req, res) => {
+app.get('/tft/champion/:id', ensureTftData, (req, res) => {
     const { id } = req.params;
-    const champion = tftCache.champions.find(
-        c => c.id.toLowerCase() === id.toLowerCase()
-    );
+    const champion = tftCache.champions.find(c => c.id === id || c.name.toLowerCase() === id.toLowerCase());
 
     if (!champion) {
         return res.status(404).json({ error: 'TFT champion not found' });
@@ -147,11 +205,13 @@ app.get('/', (req, res) => {
         endpoints: {
             lol: {
                 all_champions: '/lol/champions',
-                single_champion: '/lol/champions/:id'
+                single_champion: '/lol/champion/:id',
+                all_items: '/lol/items',
+                single_item: '/lol/item/:id'
             },
             tft: {
                 all_champions: '/tft/champions',
-                single_champion: '/tft/champions/:id'
+                single_champion: '/tft/champion/:id'
             }
         }
     });

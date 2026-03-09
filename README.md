@@ -25,11 +25,11 @@ Esta es una API robusta y fácil de usar construida con **Node.js** y **Express*
 
 ### ⚔️ League of Legends
 - `GET /lol/champions`: Obtiene la lista completa de campeones con sus estadísticas, historia e imágenes.
-- `GET /lol/champions/:id`: Obtiene el detalle de un campeón específico (puedes usar el ID como 'Aatrox' o su Key numérica).
+- `GET /lol/champions/:id`: Obtiene el detalle de un campeón específico (puedes usar el ID como 'Aatrox' o su Key numérica) ejemplo uso: `/lol/champions/Aatrox` o `/lol/champions/266`.
 
 ### ♟️ Teamfight Tactics
 - `GET /tft/champions`: Obtiene la lista completa de campeones de TFT incluyendo coste, tier y stats básicos.
-- `GET /tft/champions/:id`: Obtiene el detalle de un campeón de TFT por su ID único.
+- `GET /tft/champions/:id`: Obtiene el detalle de un campeón de TFT por su ID único ejemplo uso: `/tft/champions/1`.
 
 ## 💻 Instalación y Uso
 
