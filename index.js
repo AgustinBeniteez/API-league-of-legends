@@ -158,6 +158,21 @@ app.get('/lol/champions', ensureLolData, (req, res) => {
     res.json(lolCache);
 });
 
+app.get('/lol/champions/:role', ensureLolData, (req, res) => {
+    const { role } = req.params;
+
+    if (role) {
+        const filteredChampions = lolCache.champions.filter(champion =>
+            champion.tags.some(tag => tag.toLowerCase() === role.toLowerCase())
+        );
+        return res.json({
+            ...lolCache,
+            count: filteredChampions.length,
+            champions: filteredChampions
+        });
+    }
+});
+
 app.get('/lol/champion/:id', ensureLolData, (req, res) => {
     const { id } = req.params;
     const champion = lolCache.champions.find(c => c.id === id || c.name.toLowerCase() === id.toLowerCase());
@@ -171,6 +186,21 @@ app.get('/lol/champion/:id', ensureLolData, (req, res) => {
 
 app.get('/lol/items', ensureItemsData, (req, res) => {
     res.json(itemsCache);
+});
+
+app.get('/lol/items/:tag', ensureItemsData, (req, res) => {
+    const { tag } = req.params;
+
+    if (tag) {
+        const filteredItems = itemsCache.items.filter(item =>
+            item.tags.some(t => t.toLowerCase() === tag.toLowerCase())
+        );
+        return res.json({
+            ...itemsCache,
+            count: filteredItems.length,
+            items: filteredItems
+        });
+    }
 });
 
 app.get('/lol/item/:id', ensureItemsData, (req, res) => {
@@ -204,10 +234,18 @@ app.get('/', (req, res) => {
         message: 'League of Legends & TFT API',
         endpoints: {
             lol: {
-                all_champions: '/lol/champions',
-                single_champion: '/lol/champion/:id',
-                all_items: '/lol/items',
-                single_item: '/lol/item/:id'
+                champions : {
+                    all_champions: '/lol/champions',
+                    champions_by_role: '/lol/champions/:role',
+                    single_champion: '/lol/champion/:id',
+                },
+                items : {
+                    all_items: '/lol/items',
+                    items_by_tag: '/lol/items/:tag',
+                    single_item: '/lol/item/:id'
+                }
+                
+               
             },
             tft: {
                 all_champions: '/tft/champions',
