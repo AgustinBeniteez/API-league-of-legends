@@ -1,0 +1,26 @@
+{
+  "name": "api-league-of-legends",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AgustinBeniteez/API-league-of-legends.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AgustinBeniteez/API-league-of-legends/issues"
+  },
+  "homepage": "https://github.com/AgustinBeniteez/API-league-of-legends#readme",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.13.6",
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
+}
