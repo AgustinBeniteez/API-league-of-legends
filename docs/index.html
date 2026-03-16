@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentación | API League of Legends & TFT Ruby</title>
+    <title>Documentation | League of Legends & TFT Ruby API</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,12 +21,12 @@
             <div class="logo-icon">
                 <img src="favicon.svg" alt="Logo" width="28" height="28">
             </div>
-            <span>LoL & TFT API Ruby</span>
+            <span>LoL & TFT Ruby API</span>
         </div>
         <div class="nav-links">
             <div class="search-container">
                 <i data-lucide="search" size="18" style="color: var(--text-muted)"></i>
-                <input type="text" placeholder="Buscar docs...">
+                <input type="text" placeholder="Search docs...">
             </div>
             <a href="https://github.com/AgustinBeniteez/API-league-of-legends" target="_blank">
                 <i data-lucide="github"></i>
@@ -37,18 +37,18 @@
     <div class="layout">
         <aside class="left-sidebar">
             <div class="sidebar-group">
-                <p class="sidebar-label">Inicio</p>
-                <a href="#introduccion" class="sidebar-link active">
+                <p class="sidebar-label">Home</p>
+                <a href="#introduction" class="sidebar-link active">
                     <i data-lucide="home"></i>
-                    Introducción
+                    Introduction
                 </a>
                 <a href="#preview" class="sidebar-link">
                     <i data-lucide="eye"></i>
-                    Vista Previa
+                    Live Preview
                 </a>
-                <a href="#uso" class="sidebar-link">
+                <a href="#usage" class="sidebar-link">
                     <i data-lucide="play-circle"></i>
-                    Guía de Uso
+                    Usage Guide
                 </a>
             </div>
 
@@ -69,15 +69,15 @@
             </div>
 
             <div class="sidebar-group">
-                <p class="sidebar-label">Comunidad</p>
-                <a href="#contribucion" class="sidebar-link">
+                <p class="sidebar-label">Community</p>
+                <a href="#contribution" class="sidebar-link">
                     <i data-lucide="git-pull-request"></i>
-                    Contribución
+                    Contribution
                 </a>
                 <a href="https://github.com/AgustinBeniteez/API-league-of-legends/issues" class="sidebar-link"
                     target="_blank">
                     <i data-lucide="message-square"></i>
-                    Soporte
+                    Support
                 </a>
                 <a href="https://github.com/AgustinBeniteez/API-league-of-legends/stargazers" class="sidebar-link"
                     target="_blank">
@@ -88,176 +88,176 @@
         </aside>
 
         <main class="content">
-            <div class="breadcrumb">Documentación / Introducción</div>
+            <div class="breadcrumb">Documentation / Introduction</div>
 
-            <section id="introduccion">
-                <h1>Introducción</h1>
+            <section id="introduction">
+                <h1>Introduction</h1>
                 <p>
-                    Esta es una API robusta y fácil de usar construida con <b>Node.js</b> y <b>Express</b> que
-                    proporciona información actualizada sobre los campeones de League of Legends (LoL) y Teamfight
-                    Tactics (TFT).
+                    This is a robust and easy-to-use API built with <b>Node.js</b> and <b>Express</b> that
+                    provides up-to-date information about League of Legends (LoL) and Teamfight
+                    Tactics (TFT) champions.
                 </p>
 
                 <div class="features-grid">
                     <div class="feature-card">
                         <div class="card-icon"><i data-lucide="zap"></i></div>
-                        <h3>Tiempo Real</h3>
-                        <p>Sincronización automática con la última versión de parches de Data Dragon (Riot Games).</p>
+                        <h3>Real-Time</h3>
+                        <p>Automatic synchronization with the latest patch version from Data Dragon (Riot Games).</p>
                     </div>
 
                     <div class="feature-card">
                         <div class="card-icon"><i data-lucide="code"></i></div>
-                        <h3>Formato Amigable</h3>
-                        <p>Datos transformados en arrays limpios y fáciles de iterar en cualquier frontend.</p>
+                        <h3>Friendly Format</h3>
+                        <p>Data transformed into clean and easy-to-iterate arrays for any frontend.</p>
                     </div>
                 </div>
 
-                <h2>¿Por qué usar esta API?</h2>
+                <h2>Why use this API?</h2>
                 <ul>
-                    <li><b>Privacidad:</b> No recolectamos datos de usuario.</li>
-                    <li><b>Rapidez:</b> Servidor optimizado con baja latencia.</li>
-                    <li><b>Código Abierto:</b> Cualquiera puede auditar o contribuir al proyecto.</li>
+                    <li><b>Privacy:</b> We do not collect user data.</li>
+                    <li><b>Speed:</b> Optimized server with low latency.</li>
+                    <li><b>Open Source:</b> Anyone can audit or contribute to the project.</li>
                 </ul>
 
                 <hr style="margin: 48px 0; border: 0; border-top: 1px solid var(--border-color);">
 
                 <div id="preview">
-                    <h1>Vista Previa en Vivo</h1>
-                    <p>Explora los datos de la API en tiempo real. Haz clic en cualquier elemento para ver más detalles, incluyendo <b>skins</b> para los campeones.</p>
+                    <h1>Live Preview</h1>
+                    <p>Explore API data in real-time. Click on any item to see more details, including <b>skins</b> for champions.</p>
                     
                     <div class="preview-tabs">
-                        <button class="tab-btn active" data-tab="champions">Campeones</button>
-                        <button class="tab-btn" data-tab="items">Objetos</button>
-                        <button class="tab-btn" data-tab="spells">Hechizos</button>
-                        <button class="tab-btn" data-tab="runes">Runas</button>
+                        <button class="tab-btn active" data-tab="champions">Champions</button>
+                        <button class="tab-btn" data-tab="items">Items</button>
+                        <button class="tab-btn" data-tab="spells">Spells</button>
+                        <button class="tab-btn" data-tab="runes">Runes</button>
                     </div>
 
                     <div class="preview-container">
                         <div id="loader" class="loader-container">
                             <div class="spinner"></div>
-                            <p>Cargando datos de la API...</p>
+                            <p>Loading API data...</p>
                         </div>
                         <div id="preview-grid" class="preview-grid"></div>
                     </div>
                 </div>
             </section>
 
-            <section id="uso">
-                <h1>Guía de Uso</h1>
-                <p>Implementar la API en tu proyecto es sencillo. Puedes usar <code>fetch</code> nativo de JavaScript o
-                    cualquier cliente HTTP.</p>
+            <section id="usage">
+                <h1>Usage Guide</h1>
+                <p>Implementing the API in your project is simple. You can use native JavaScript <code>fetch</code> or
+                    any HTTP client.</p>
 
-                <h3>Cómo realizar una petición</h3>
-                <p>Para obtener los datos de un campeón específico, como <b>Lux</b>, simplemente realiza una petición
-                    GET al endpoint correspondiente:</p>
+                <h3>How to make a request</h3>
+                <p>To get data for a specific champion, like <b>Lux</b>, simply perform a
+                    GET request to the corresponding endpoint:</p>
                 <pre><code>fetch('https://api-league-of-legends-ruby.vercel.app/lol/champion/Lux')
   .then(response => response.json())
   .then(data => {
-    console.log("Nombre:", data.name);
-    console.log("Título:", data.title);
-    console.log("Imagen:", data.image.full);
+    console.log("Name:", data.name);
+    console.log("Title:", data.title);
+    console.log("Image:", data.image.full);
   });</code></pre>
 
-                <h3>Recorriendo la respuesta JSON</h3>
-                <p>Al obtener la lista completa de campeones, recibirás un Array que puedes iterar fácilmente para
-                    mostrar tarjetas o listas en tu interfaz:</p>
-                <pre><code>// Ejemplo recorriendo todos los campeones
+                <h3>Iterating over the JSON response</h3>
+                <p>By requesting the full list of champions, you will receive an Array that you can easily iterate over to
+                    show cards or lists in your interface:</p>
+                <pre><code>// Example iterating over all champions
 const champions = await fetch('https://api-league-of-legends-ruby.vercel.app/lol/champions').then(r => r.json());
 
 champions.forEach(champ => {
-  console.log(`Campeón: ${champ.name} - ${champ.title}`);
+  console.log(`Champion: ${champ.name} - ${champ.title}`);
 });</code></pre>
             </section>
 
             <hr style="margin: 48px 0; border: 0; border-top: 1px solid var(--border-color);">
 
             <section id="lol-endpoints">
-                <h1>Endpoints de LoL</h1>
-                <p>Endpoints principales para acceder a la base de datos de League of Legends. La URL base es
+                <h1>LoL Endpoints</h1>
+                <p>Main endpoints to access the League of Legends database. The base URL is
                     <code>https://api-league-of-legends-ruby.vercel.app</code>.</p>
 
                 <div class="endpoint-item">
                     <span class="method get">GET</span>
                     <code>https://api-league-of-legends-ruby.vercel.app/lol/champions</code>
-                    <p>Obtiene todos los campeones con estadísticas e imágenes.</p>
+                    <p>Gets all champions with stats and images.</p>
                 </div>
 
                 <div class="endpoint-item">
                     <span class="method get">GET</span>
                     <code>https://api-league-of-legends-ruby.vercel.app/lol/champion/:id</code>
-                    <p>Detalle de un campeón por nombre o ID (ej: <code>/lol/champion/Lux</code>).</p>
+                    <p>Detail of a champion by name or ID (e.g., <code>/lol/champion/Lux</code>).</p>
                 </div>
 
                 <div class="endpoint-item">
                     <span class="method get">GET</span>
                     <code>https://api-league-of-legends-ruby.vercel.app/lol/items</code>
-                    <p>Lista completa de todos los objetos del juego.</p>
+                    <p>Full list of all game items.</p>
                 </div>
             </section>
 
             <section id="lol-spells" style="margin-top: 64px;">
-                <h1>Hechizos de Invocador</h1>
-                <p>Endpoints para obtener información sobre los hechizos de invocador (Summoner Spells).</p>
+                <h1>Summoner Spells</h1>
+                <p>Endpoints to get information about summoner spells.</p>
 
                 <div class="endpoint-item">
                     <span class="method get">GET</span>
                     <code>https://api-league-of-legends-ruby.vercel.app/lol/spells</code>
-                    <p>Obtiene todos los hechizos disponibles en el juego.</p>
+                    <p>Gets all spells available in the game.</p>
                 </div>
 
                 <div class="endpoint-item">
                     <span class="method get">GET</span>
                     <code>https://api-league-of-legends-ruby.vercel.app/lol/spell/:id</code>
-                    <p>Detalle de un hechizo por ID o nombre (ej: <code>/lol/spell/SummonerFlash</code>).</p>
+                    <p>Detail of a spell by ID or name (e.g., <code>/lol/spell/SummonerFlash</code>).</p>
                 </div>
             </section>
 
             <section id="tft-endpoints" style="margin-top: 64px;">
-                <h1>Endpoints de TFT</h1>
-                <p>Datos específicos para Teamfight Tactics (Set actual).</p>
+                <h1>TFT Endpoints</h1>
+                <p>Specific data for Teamfight Tactics (Current Set).</p>
 
                 <div class="endpoint-item">
                     <span class="method get">GET</span>
                     <code>https://api-league-of-legends-ruby.vercel.app/tft/champions</code>
-                    <p>Lista completa de campeones, costes y tiers.</p>
+                    <p>Full list of champions, costs, and tiers.</p>
                 </div>
 
                 <div class="endpoint-item">
                     <span class="method get">GET</span>
                     <code>https://api-league-of-legends-ruby.vercel.app/tft/champion/:id</code>
-                    <p>Detalle específico de una pieza de TFT.</p>
+                    <p>Specific detail of a TFT piece.</p>
                 </div>
             </section>
 
 
 
-            <section id="contribucion">
-                <h1>Contribución</h1>
-                <p>Si deseas contribuir al desarrollo o ejecutar el proyecto localmente, sigue estos pasos.</p>
+            <section id="contribution">
+                <h1>Contribution</h1>
+                <p>If you want to contribute to development or run the project locally, follow these steps.</p>
 
-                <h3>1. Clonar el repositorio</h3>
+                <h3>1. Clone the repository</h3>
                 <pre><code>git clone https://github.com/AgustinBeniteez/API-league-of-legends.git
 cd API-league-of-legends</code></pre>
 
-                <h3>2. Instalar dependencias</h3>
+                <h3>2. Install dependencies</h3>
                 <pre><code>npm install</code></pre>
 
-                <h3>3. Ejecutar el servidor</h3>
+                <h3>3. Run the server</h3>
                 <pre><code>node index.js</code></pre>
-                <p>El servidor se iniciará por defecto en <code>http://localhost:3000</code> para pruebas locales.</p>
+                <p>The server will start by default at <code>http://localhost:3000</code> for local testing.</p>
             </section>
         </main>
 
         <aside class="right-sidebar">
-            <div class="toc-title">En esta página</div>
+            <div class="toc-title">On this page</div>
             <ul class="toc-list">
-                <li class="toc-item"><a href="#introduccion" class="toc-link active">Descripción</a></li>
-                <li class="toc-item"><a href="#preview" class="toc-link">Vista Previa</a></li>
-                <li class="toc-item"><a href="#uso" class="toc-link">Guía de Uso</a></li>
-                <li class="toc-item"><a href="#lol-endpoints" class="toc-link">Endpoints LoL</a></li>
-                <li class="toc-item"><a href="#lol-spells" class="toc-link">Hechizos</a></li>
-                <li class="toc-item"><a href="#tft-endpoints" class="toc-link">Endpoints TFT</a></li>
-                <li class="toc-item"><a href="#contribucion" class="toc-link">Contribución</a></li>
+                <li class="toc-item"><a href="#introduction" class="toc-link active">Description</a></li>
+                <li class="toc-item"><a href="#preview" class="toc-link">Live Preview</a></li>
+                <li class="toc-item"><a href="#usage" class="toc-link">Usage Guide</a></li>
+                <li class="toc-item"><a href="#lol-endpoints" class="toc-link">LoL Endpoints</a></li>
+                <li class="toc-item"><a href="#lol-spells" class="toc-link">Summoner Spells</a></li>
+                <li class="toc-item"><a href="#tft-endpoints" class="toc-link">TFT Endpoints</a></li>
+                <li class="toc-item"><a href="#contribution" class="toc-link">Contribution</a></li>
             </ul>
         </aside>
     </div>

@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return data;
         } catch (error) {
             console.error('Error fetching data:', error);
-            previewGrid.innerHTML = '<p style="color: #ff4444; grid-column: 1/-1; text-align: center;">Error al conectar con la API</p>';
+            previewGrid.innerHTML = '<p style="color: #ff4444; grid-column: 1/-1; text-align: center;">Error connecting to the API</p>';
         } finally {
             loader.classList.remove('active');
         }
@@ -135,12 +135,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="detail-content">
                         <h3>Lore</h3>
                         <p>${data.lore || 'No lore available.'}</p>
-                        <h3>Estadísticas</h3>
+                        <h3>Stats</h3>
                         <div class="stat-tags">
                             ${(data.tags || []).map(tag => `<span class="stat-tag">${tag}</span>`).join('')}
                         </div>
 
-                        <h3 style="margin-top: 32px">Habilidades</h3>
+                        <h3 style="margin-top: 32px">Abilities</h3>
                         <div class="abilities-list">
                             <div class="ability-item">
                                 <img src="${data.passive.image}" class="ability-icon active" onclick="updateAbilityDesc(this, '${data.passive.name}', '${data.passive.description.replace(/'/g, "\\'")}')">
@@ -158,22 +158,22 @@ document.addEventListener('DOMContentLoaded', () => {
                             <p id="ability-desc">${data.passive.description}</p>
                         </div>
 
-                        <h3 style="margin-top: 32px">Estadísticas Base</h3>
+                        <h3 style="margin-top: 32px">Base Stats</h3>
                         <div class="stats-grid-detailed">
                             <div class="stat-item">
-                                <span class="stat-label">Vida (HP)</span>
+                                <span class="stat-label">Health (HP)</span>
                                 <span class="stat-value">${data.stats.hp} (+${data.stats.hpperlevel}/lv)</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">${data.partype || 'Recurso'}</span>
+                                <span class="stat-label">${data.partype || 'Resource'}</span>
                                 <span class="stat-value">${data.stats.mp} (+${data.stats.mpperlevel}/lv)</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Armadura</span>
+                                <span class="stat-label">Armor</span>
                                 <span class="stat-value">${data.stats.armor} (+${data.stats.armorperlevel}/lv)</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Resist. Mágica</span>
+                                <span class="stat-label">Magic Resist</span>
                                 <span class="stat-value">${data.stats.spellblock} (+${data.stats.spellblockperlevel}/lv)</span>
                             </div>
                             <div class="stat-item">
@@ -181,12 +181,12 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <span class="stat-value">${data.stats.attackdamage} (+${data.stats.attackdamageperlevel}/lv)</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Vel. Movimiento</span>
+                                <span class="stat-label">Movement Speed</span>
                                 <span class="stat-value">${data.stats.movespeed}</span>
                             </div>
                         </div>
 
-                        <h3 style="margin-top: 32px">Skins Disponibles</h3>
+                        <h3 style="margin-top: 32px">Available Skins</h3>
                         <div class="skin-grid">
                             ${(data.skins || []).map(skin => `
                                 <div class="skin-item" onclick="document.querySelector('.detail-header-img').src='${skin.splash}'">
@@ -204,12 +204,12 @@ document.addEventListener('DOMContentLoaded', () => {
                             <img src="${data.image}" style="width: 120px; border-radius: 12px; border: 2px solid var(--accent-color)">
                             <div>
                                 <h1>${data.name}</h1>
-                                <p style="color: var(--accent-color); font-weight: 700; margin: 0">Oro: ${data.gold.total} (Venta: ${data.gold.sell})</p>
+                                <p style="color: var(--accent-color); font-weight: 700; margin: 0">Gold: ${data.gold.total} (Sell: ${data.gold.sell})</p>
                             </div>
                         </div>
-                        <h3>Descripción</h3>
+                        <h3>Description</h3>
                         <div style="color: #cbd5e0">${data.description}</div>
-                        <h3 style="margin-top: 24px">Estadísticas</h3>
+                        <h3 style="margin-top: 24px">Stats</h3>
                         <div class="stat-tags">
                             ${Object.keys(data.stats).map(stat => `<span class="stat-tag">${stat}: ${data.stats[stat]}</span>`).join('')}
                         </div>
@@ -225,9 +225,9 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <p style="color: var(--accent-color); font-weight: 700; margin: 0">Cooldown: ${data.cooldownBurn}s</p>
                             </div>
                         </div>
-                        <h3>Descripción</h3>
+                        <h3>Description</h3>
                         <p>${data.description}</p>
-                        <h3>Nivel Requerido: ${data.summonerLevel}</h3>
+                        <h3>Required Level: ${data.summonerLevel}</h3>
                     </div>
                 `;
             } else if (type === 'runes') {
@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 modalBody.innerHTML = `
                     <div class="detail-header" style="height: 150px">
                         <div class="detail-header-info" style="background: linear-gradient(transparent, var(--bg-color))">
-                            <h1>Runas: Reforged</h1>
+                            <h1>Runes: Reforged</h1>
                         </div>
                     </div>
                     <div class="detail-content">
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }
         } catch (error) {
-            modalBody.innerHTML = '<p>Error al cargar detalles</p>';
+            modalBody.innerHTML = '<p>Error loading details</p>';
         }
     };
 
