@@ -318,6 +318,7 @@ app.get('/lol/champion/:id', ensureLolData, async (req, res) => {
         const response = await axios.get(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion/${championBasic.id}.json`);
         const detailedData = response.data.data[championBasic.id];
         
+        const resourceName = detailedData.partype || 'Mana';
         const championWithSkins = {
             ...championBasic,
             skins: detailedData.skins.map(skin => ({
@@ -331,7 +332,7 @@ app.get('/lol/champion/:id', ensureLolData, async (req, res) => {
             spells: detailedData.spells.map(spell => ({
                 id: spell.id,
                 name: spell.name,
-                description: spell.description,
+                description: spell.description.replace(/{{ abilityresourcename }}/g, resourceName),
                 tooltip: spell.tooltip,
                 cooldown: spell.cooldownBurn,
                 cost: spell.costBurn,
@@ -340,7 +341,7 @@ app.get('/lol/champion/:id', ensureLolData, async (req, res) => {
             })),
             passive: {
                 name: detailedData.passive.name,
-                description: detailedData.passive.description,
+                description: detailedData.passive.description.replace(/{{ abilityresourcename }}/g, resourceName),
                 image: `https://ddragon.leagueoflegends.com/cdn/${version}/img/passive/${detailedData.passive.image.full}`
             },
             lore: detailedData.lore

@@ -155,18 +155,39 @@
   .then(data => {
     console.log("Name:", data.name);
     console.log("Title:", data.title);
-    console.log("Image:", data.image.full);
   });</code></pre>
 
-                <h3>Iterating over the JSON response</h3>
-                <p>By requesting the full list of champions, you will receive an Array that you can easily iterate over to
-                    show cards or lists in your interface:</p>
-                <pre><code>// Example iterating over all champions
-const champions = await fetch('https://api-league-of-legends-ruby.vercel.app/lol/champions').then(r => r.json());
+                <h3>Advanced Usage Examples</h3>
+                
+                <div class="example-card" style="background: var(--sidebar-bg); border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid var(--border-color)">
+                    <h4 style="color: var(--accent-color); margin-bottom: 12px">1. Getting Champion Splash Arts (Skins)</h4>
+                    <p style="font-size: 0.95rem">Each champion object contains a <code>skins</code> array. You can use the <code>num</code> property to build the splash art URL.</p>
+                    <pre><code>// Get the splash art for the second skin
+const secondSkin = data.skins[1]; 
+const imageUrl = `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${data.id}_${secondSkin.num}.jpg`;</code></pre>
+                </div>
 
-champions.forEach(champ => {
-  console.log(`Champion: ${champ.name} - ${champ.title}`);
-});</code></pre>
+                <div class="example-card" style="background: var(--sidebar-bg); border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid var(--border-color)">
+                    <h4 style="color: var(--accent-color); margin-bottom: 12px">2. Accessing Detailed Stats</h4>
+                    <p style="font-size: 0.95rem">Base stats include health, resource type, and growth values per level.</p>
+                    <pre><code>console.log(`HP: ${data.stats.hp} (+${data.stats.hpperlevel} per level)`);
+console.log(`Armor: ${data.stats.armor}`);
+console.log(`Resource: ${data.partype}`); // e.g., "Mana", "Energy"</code></pre>
+                </div>
+
+                <div class="example-card" style="background: var(--sidebar-bg); border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid var(--border-color)">
+                    <h4 style="color: var(--accent-color); margin-bottom: 12px">3. Ability Costs and Cooldowns</h4>
+                    <p style="font-size: 0.95rem">The <code>spells</code> array contains your Q, W, E, and R skills with all technical meta-data.</p>
+                    <pre><code>const ultimate = data.spells[3]; // The R ability
+console.log(`Name: ${ultimate.name}`);
+console.log(`Cooldown: ${ultimate.cooldown}s`);
+console.log(`Cost: ${ultimate.cost} ${ultimate.costType}`);</code></pre>
+                </div>
+
+                <h3>Iterating over the JSON response</h3>
+                <p>When requesting the full list of champions, you receive an array of basic champion info. Use this for lists of thumbnails or search filters.</p>
+                <pre><code>// Example: Filter only Tanks
+const tanks = allChampions.filter(c => c.tags.includes('Tank'));</code></pre>
             </section>
 
             <hr style="margin: 48px 0; border: 0; border-top: 1px solid var(--border-color);">
