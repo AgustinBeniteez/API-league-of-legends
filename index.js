@@ -13,10 +13,12 @@ let lolCache = null;
 let tftCache = null;
 let itemsCache = null;
 let spellsCache = null;
+let runesCache = null;
 let lastLolUpdate = null;
 let lastTftUpdate = null;
 let lastItemsUpdate = null;
 let lastSpellsUpdate = null;
+let lastRunesUpdate = null;
 
 const getLatestVersion = async () => {
     const response = await axios.get('https://ddragon.leagueoflegends.com/api/versions.json');
@@ -38,7 +40,28 @@ const fetchLolChampions = async () => {
             image: `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/${champion.image.full}`,
             tags: champion.tags,
             partype: champion.partype,
-            stats: champion.stats
+            stats: {
+                hp: champion.stats.hp,
+                hpperlevel: champion.stats.hpperlevel,
+                mp: champion.stats.mp,
+                mpperlevel: champion.stats.mpperlevel,
+                movespeed: champion.stats.movespeed,
+                armor: champion.stats.armor,
+                armorperlevel: champion.stats.armorperlevel,
+                spellblock: champion.stats.spellblock,
+                spellblockperlevel: champion.stats.spellblockperlevel,
+                attackrange: champion.stats.attackrange,
+                hpregen: champion.stats.hpregen,
+                hpregenperlevel: champion.stats.hpregenperlevel,
+                mpregen: champion.stats.mpregen,
+                mpregenperlevel: champion.stats.mpregenperlevel,
+                crit: champion.stats.crit,
+                critperlevel: champion.stats.critperlevel,
+                attackdamage: champion.stats.attackdamage,
+                attackdamageperlevel: champion.stats.attackdamageperlevel,
+                attackspeedperlevel: champion.stats.attackspeedperlevel,
+                attackspeed: champion.stats.attackspeed
+            }
         }));
 
         lolCache = {
@@ -134,6 +157,43 @@ const fetchSpells = async () => {
     }
 };
 
+const fetchRunes = async () => {
+    try {
+        const version = await getLatestVersion();
+        const response = await axios.get(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/runesReforged.json`);
+        
+        const runesData = response.data;
+        const runesArray = runesData.map(path => ({
+            id: path.id,
+            key: path.key,
+            icon: `https://ddragon.leagueoflegends.com/cdn/img/${path.icon}`,
+            name: path.name,
+            slots: path.slots.map(slot => ({
+                runes: slot.runes.map(rune => ({
+                    id: rune.id,
+                    key: rune.key,
+                    icon: `https://ddragon.leagueoflegends.com/cdn/img/${rune.icon}`,
+                    name: rune.name,
+                    shortDesc: rune.shortDesc,
+                    longDesc: rune.longDesc
+                }))
+            }))
+        }));
+
+        runesCache = {
+            version,
+            count: runesArray.length,
+            runes: runesArray
+        };
+        lastRunesUpdate = new Date();
+        
+        return runesCache;
+    } catch (error) {
+        console.error('Error fetching runes:', error.message);
+        throw error;
+    }
+};
+
 const fetchTftChampions = async () => {
     try {
         const version = await getLatestVersion();
@@ -201,6 +261,18 @@ const ensureSpellsData = async (req, res, next) => {
 };
 
 // Middleware para asegurar que tenemos datos de TFT
+const ensureRunesData = async (req, res, next) => {
+    const ONE_HOUR = 60 * 60 * 1000;
+    if (!runesCache || (new Date() - lastRunesUpdate > ONE_HOUR)) {
+        try {
+            await fetchRunes();
+        } catch (error) {
+            return res.status(500).json({ error: 'Failed to fetch runes data' });
+        }
+    }
+    next();
+};
+
 const ensureTftData = async (req, res, next) => {
     const ONE_HOUR = 60 * 60 * 1000;
     if (!tftCache || (new Date() - lastTftUpdate > ONE_HOUR)) {
@@ -322,6 +394,10 @@ app.get('/lol/spell/:id', ensureSpellsData, (req, res) => {
     res.json(spell);
 });
 
+app.get('/lol/runes', ensureRunesData, (req, res) => {
+    res.json(runesCache);
+});
+
 app.get('/tft/champions', ensureTftData, (req, res) => {
     res.json(tftCache);
 });
@@ -355,6 +431,9 @@ app.get('/', (req, res) => {
                 spells: {
                     all_spells: '/lol/spells',
                     single_spell: '/lol/spell/:id'
+                },
+                runes: {
+                    all_runes: '/lol/runes'
                 }
             },
             tft: {

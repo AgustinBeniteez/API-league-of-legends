@@ -106,6 +106,15 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
     };
 
+    const renderRunes = (runes) => {
+        previewGrid.innerHTML = runes.map(path => `
+            <div class="preview-item rune-path" onclick="showDetail('/lol/runes', 'runes')">
+                <img src="${path.icon}" alt="${path.name}" style="background: rgba(0,0,0,0.4); padding: 8px">
+                <p>${path.name}</p>
+            </div>
+        `).join('');
+    };
+
     window.showDetail = async (endpoint, type) => {
         modalOverlay.classList.add('active');
         modalBody.innerHTML = '<div class="spinner"></div>';
@@ -130,6 +139,53 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="stat-tags">
                             ${(data.tags || []).map(tag => `<span class="stat-tag">${tag}</span>`).join('')}
                         </div>
+
+                        <h3 style="margin-top: 32px">Habilidades</h3>
+                        <div class="abilities-list">
+                            <div class="ability-item">
+                                <img src="${data.passive.image}" class="ability-icon active" onclick="updateAbilityDesc(this, '${data.passive.name}', '${data.passive.description.replace(/'/g, "\\'")}')">
+                                <span>P</span>
+                            </div>
+                            ${data.spells.map((spell, index) => `
+                                <div class="ability-item">
+                                    <img src="${spell.image}" class="ability-icon" onclick="updateAbilityDesc(this, '${spell.name}', '${spell.description.replace(/'/g, "\\'")}')">
+                                    <span>${['Q', 'W', 'E', 'R'][index]}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div id="ability-details" class="ability-details-box">
+                            <h4 id="ability-name">${data.passive.name}</h4>
+                            <p id="ability-desc">${data.passive.description}</p>
+                        </div>
+
+                        <h3 style="margin-top: 32px">Estadísticas Base</h3>
+                        <div class="stats-grid-detailed">
+                            <div class="stat-item">
+                                <span class="stat-label">Vida (HP)</span>
+                                <span class="stat-value">${data.stats.hp} (+${data.stats.hpperlevel}/lv)</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">${data.partype || 'Recurso'}</span>
+                                <span class="stat-value">${data.stats.mp} (+${data.stats.mpperlevel}/lv)</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Armadura</span>
+                                <span class="stat-value">${data.stats.armor} (+${data.stats.armorperlevel}/lv)</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Resist. Mágica</span>
+                                <span class="stat-value">${data.stats.spellblock} (+${data.stats.spellblockperlevel}/lv)</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Attack Damage</span>
+                                <span class="stat-value">${data.stats.attackdamage} (+${data.stats.attackdamageperlevel}/lv)</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Vel. Movimiento</span>
+                                <span class="stat-value">${data.stats.movespeed}</span>
+                            </div>
+                        </div>
+
                         <h3 style="margin-top: 32px">Skins Disponibles</h3>
                         <div class="skin-grid">
                             ${(data.skins || []).map(skin => `
@@ -174,6 +230,38 @@ document.addEventListener('DOMContentLoaded', () => {
                         <h3>Nivel Requerido: ${data.summonerLevel}</h3>
                     </div>
                 `;
+            } else if (type === 'runes') {
+                // For simplicity, showing the path details when a path is clicked
+                const path = data.runes[0]; // Example: Precision
+                modalBody.innerHTML = `
+                    <div class="detail-header" style="height: 150px">
+                        <div class="detail-header-info" style="background: linear-gradient(transparent, var(--bg-color))">
+                            <h1>Runas: Reforged</h1>
+                        </div>
+                    </div>
+                    <div class="detail-content">
+                        ${data.runes.map(path => `
+                            <div class="rune-path-section" style="margin-bottom: 40px">
+                                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px">
+                                    <img src="${path.icon}" style="width: 48px">
+                                    <h2 style="color: var(--accent-color)">${path.name}</h2>
+                                </div>
+                                <div class="rune-slots-grid" style="display: grid; gap: 16px">
+                                    ${path.slots.map((slot, idx) => `
+                                        <div class="rune-slot" style="display: flex; gap: 12px; background: var(--sidebar-bg); padding: 12px; border-radius: 8px">
+                                            ${slot.runes.map(rune => `
+                                                <div class="rune-mini" title="${rune.longDesc.replace(/<[^>]*>?/gm, '')}" style="text-align: center; width: 80px">
+                                                    <img src="${rune.icon}" style="width: 40px; margin-bottom: 4px">
+                                                    <p style="font-size: 0.7rem; margin: 0">${rune.name}</p>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
             }
         } catch (error) {
             modalBody.innerHTML = '<p>Error al cargar detalles</p>';
@@ -193,6 +281,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (tab === 'spells') {
             const data = await fetchData('/lol/spells');
             if (data) renderSpells(data.spells);
+        } else if (tab === 'runes') {
+            const data = await fetchData('/lol/runes');
+            if (data) renderRunes(data.runes);
         }
     };
 
@@ -204,6 +295,14 @@ document.addEventListener('DOMContentLoaded', () => {
     modalOverlay.addEventListener('click', (e) => {
         if (e.target === modalOverlay) modalOverlay.classList.remove('active');
     });
+
+    // Ability Description Switcher
+    window.updateAbilityDesc = (el, name, desc) => {
+        document.querySelectorAll('.ability-icon').forEach(img => img.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('ability-name').innerText = name;
+        document.getElementById('ability-desc').innerHTML = desc;
+    };
 
     // Initial load
     loadTab('champions');
