@@ -332,6 +332,10 @@ app.get('/lol/champion/:id', ensureLolData, async (req, res) => {
                 id: spell.id,
                 name: spell.name,
                 description: spell.description,
+                tooltip: spell.tooltip,
+                cooldown: spell.cooldownBurn,
+                cost: spell.costBurn,
+                costType: spell.costType,
                 image: `https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${spell.image.full}`
             })),
             passive: {

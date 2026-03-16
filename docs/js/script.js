@@ -146,15 +146,25 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <img src="${data.passive.image}" class="ability-icon active" onclick="updateAbilityDesc(this, '${data.passive.name}', '${data.passive.description.replace(/'/g, "\\'")}')">
                                 <span>P</span>
                             </div>
-                            ${data.spells.map((spell, index) => `
-                                <div class="ability-item">
-                                    <img src="${spell.image}" class="ability-icon" onclick="updateAbilityDesc(this, '${spell.name}', '${spell.description.replace(/'/g, "\\'")}')">
-                                    <span>${['Q', 'W', 'E', 'R'][index]}</span>
-                                </div>
-                            `).join('')}
+                            ${data.spells.map((spell, index) => {
+                                const meta = JSON.stringify({
+                                    cooldown: spell.cooldown,
+                                    cost: spell.cost,
+                                    costType: spell.costType
+                                }).replace(/"/g, '&quot;');
+                                return `
+                                    <div class="ability-item">
+                                        <img src="${spell.image}" class="ability-icon" onclick="updateAbilityDesc(this, '${spell.name.replace(/'/g, "\\'")}', '${spell.description.replace(/'/g, "\\'").replace(/\n/g, "<br>")}', '${meta}')">
+                                        <span>${['Q', 'W', 'E', 'R'][index]}</span>
+                                    </div>
+                                `;
+                            }).join('')}
                         </div>
                         <div id="ability-details" class="ability-details-box">
-                            <h4 id="ability-name">${data.passive.name}</h4>
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px">
+                                <h4 id="ability-name" style="margin: 0">${data.passive.name}</h4>
+                                <div id="ability-meta" style="display: flex; gap: 8px"></div>
+                            </div>
                             <p id="ability-desc">${data.passive.description}</p>
                         </div>
 
@@ -297,11 +307,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Ability Description Switcher
-    window.updateAbilityDesc = (el, name, desc) => {
+    window.updateAbilityDesc = (el, name, desc, metaJson) => {
         document.querySelectorAll('.ability-icon').forEach(img => img.classList.remove('active'));
         el.classList.add('active');
         document.getElementById('ability-name').innerText = name;
         document.getElementById('ability-desc').innerHTML = desc;
+        
+        const metaCont = document.getElementById('ability-meta');
+        metaCont.innerHTML = '';
+        
+        if (metaJson) {
+            const meta = JSON.parse(metaJson.replace(/&quot;/g, '"'));
+            if (meta.cooldown && meta.cooldown !== '0') {
+                metaCont.innerHTML += `<span class="ability-badge cd">CD: ${meta.cooldown}s</span>`;
+            }
+            if (meta.cost && meta.cost !== '0') {
+                metaCont.innerHTML += `<span class="ability-badge cost">${meta.cost} ${meta.costType}</span>`;
+            }
+        }
     };
 
     // Initial load

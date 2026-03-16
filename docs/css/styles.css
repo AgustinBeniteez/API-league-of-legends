@@ -747,3 +747,24 @@ pre code {
     color: var(--text-main);
     line-height: 1.6;
 }
+
+.ability-badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-family: 'Fira Code', monospace;
+}
+
+.ability-badge.cd {
+    background: rgba(255, 255, 255, 0.1);
+    color: #cbd5e0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.ability-badge.cost {
+    background: rgba(88, 166, 255, 0.1);
+    color: var(--accent-color);
+    border: 1px solid var(--accent-glow);
+}
