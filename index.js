@@ -12,9 +12,11 @@ app.use(express.json());
 let lolCache = null;
 let tftCache = null;
 let itemsCache = null;
+let spellsCache = null;
 let lastLolUpdate = null;
 let lastTftUpdate = null;
 let lastItemsUpdate = null;
+let lastSpellsUpdate = null;
 
 const getLatestVersion = async () => {
     const response = await axios.get('https://ddragon.leagueoflegends.com/api/versions.json');
@@ -25,10 +27,10 @@ const fetchLolChampions = async () => {
     try {
         const version = await getLatestVersion();
         const response = await axios.get(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`);
-        
         const championsData = response.data.data;
         const championsArray = Object.values(championsData).map(champion => ({
-            id: champion.key,
+            id: champion.id,
+            key: champion.key,
             name: champion.name,
             title: champion.title,
             blurb: champion.blurb,
@@ -60,7 +62,7 @@ const fetchItems = async () => {
         
         const itemsData = response.data.data;
         const itemsArray = Object.values(itemsData).map(item => ({
-            id: item.id,
+            id: item.id || Object.keys(itemsData).find(key => itemsData[key] === item),
             name: item.name,
             description: item.description,
             plaintext: item.plaintext,
@@ -83,6 +85,51 @@ const fetchItems = async () => {
         return itemsCache;
     } catch (error) {
         console.error('Error fetching items:', error.message);
+        throw error;
+    }
+};
+
+const fetchSpells = async () => {
+    try {
+        const version = await getLatestVersion();
+        const response = await axios.get(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/summoner.json`);
+        
+        const spellsData = response.data.data;
+        const spellsArray = Object.values(spellsData).map(spell => ({
+            id: spell.id,
+            key: spell.key,
+            name: spell.name,
+            description: spell.description,
+            tooltip: spell.tooltip,
+            maxrank: spell.maxrank,
+            cooldown: spell.cooldown,
+            cooldownBurn: spell.cooldownBurn,
+            cost: spell.cost,
+            costBurn: spell.costBurn,
+            datavalues: spell.datavalues,
+            effect: spell.effect,
+            effectBurn: spell.effectBurn,
+            vars: spell.vars,
+            summonerLevel: spell.summonerLevel,
+            modes: spell.modes,
+            costType: spell.costType,
+            maxammo: spell.maxammo,
+            range: spell.range,
+            rangeBurn: spell.rangeBurn,
+            image: `https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${spell.image.full}`,
+            resource: spell.resource
+        }));
+
+        spellsCache = {
+            version,
+            count: spellsArray.length,
+            spells: spellsArray
+        };
+        lastSpellsUpdate = new Date();
+        
+        return spellsCache;
+    } catch (error) {
+        console.error('Error fetching spells:', error.message);
         throw error;
     }
 };
@@ -141,6 +188,18 @@ const ensureItemsData = async (req, res, next) => {
     next();
 };
 
+const ensureSpellsData = async (req, res, next) => {
+    const ONE_HOUR = 60 * 60 * 1000;
+    if (!spellsCache || (new Date() - lastSpellsUpdate > ONE_HOUR)) {
+        try {
+            await fetchSpells();
+        } catch (error) {
+            return res.status(500).json({ error: 'Failed to fetch spells data' });
+        }
+    }
+    next();
+};
+
 // Middleware para asegurar que tenemos datos de TFT
 const ensureTftData = async (req, res, next) => {
     const ONE_HOUR = 60 * 60 * 1000;
@@ -173,15 +232,49 @@ app.get('/lol/champions/:role', ensureLolData, (req, res) => {
     }
 });
 
-app.get('/lol/champion/:id', ensureLolData, (req, res) => {
+app.get('/lol/champion/:id', ensureLolData, async (req, res) => {
     const { id } = req.params;
-    const champion = lolCache.champions.find(c => c.id === id || c.name.toLowerCase() === id.toLowerCase());
+    const championBasic = lolCache.champions.find(c => c.id === id || c.name.toLowerCase() === id.toLowerCase() || c.key === id);
 
-    if (!champion) {
+    if (!championBasic) {
         return res.status(404).json({ error: 'LoL champion not found' });
     }
 
-    res.json(champion);
+    try {
+        const version = lolCache.version;
+        // Fetch detailed data for skins
+        const response = await axios.get(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion/${championBasic.id}.json`);
+        const detailedData = response.data.data[championBasic.id];
+        
+        const championWithSkins = {
+            ...championBasic,
+            skins: detailedData.skins.map(skin => ({
+                id: skin.id,
+                num: skin.num,
+                name: skin.name,
+                chromas: skin.chromas,
+                splash: `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${championBasic.id}_${skin.num}.jpg`,
+                loading: `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${championBasic.id}_${skin.num}.jpg`
+            })),
+            spells: detailedData.spells.map(spell => ({
+                id: spell.id,
+                name: spell.name,
+                description: spell.description,
+                image: `https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${spell.image.full}`
+            })),
+            passive: {
+                name: detailedData.passive.name,
+                description: detailedData.passive.description,
+                image: `https://ddragon.leagueoflegends.com/cdn/${version}/img/passive/${detailedData.passive.image.full}`
+            },
+            lore: detailedData.lore
+        };
+
+        res.json(championWithSkins);
+    } catch (error) {
+        console.error('Error fetching detailed champion data:', error.message);
+        res.json(championBasic); // Fallback to basic data if detailed fetch fails
+    }
 });
 
 app.get('/lol/items', ensureItemsData, (req, res) => {
@@ -205,13 +298,28 @@ app.get('/lol/items/:tag', ensureItemsData, (req, res) => {
 
 app.get('/lol/item/:id', ensureItemsData, (req, res) => {
     const { id } = req.params;
-    const item = itemsCache.items.find(i => i.id === id || i.name.toLowerCase() === id.toLowerCase());
+    const item = itemsCache.items.find(i => i.id == id || i.name.toLowerCase() === id.toLowerCase());
 
     if (!item) {
         return res.status(404).json({ error: 'Item not found' });
     }
 
     res.json(item);
+});
+
+app.get('/lol/spells', ensureSpellsData, (req, res) => {
+    res.json(spellsCache);
+});
+
+app.get('/lol/spell/:id', ensureSpellsData, (req, res) => {
+    const { id } = req.params;
+    const spell = spellsCache.spells.find(s => s.id === id || s.key == id || s.name.toLowerCase() === id.toLowerCase());
+
+    if (!spell) {
+        return res.status(404).json({ error: 'Spell not found' });
+    }
+
+    res.json(spell);
 });
 
 app.get('/tft/champions', ensureTftData, (req, res) => {
@@ -243,9 +351,11 @@ app.get('/', (req, res) => {
                     all_items: '/lol/items',
                     items_by_tag: '/lol/items/:tag',
                     single_item: '/lol/item/:id'
+                },
+                spells: {
+                    all_spells: '/lol/spells',
+                    single_spell: '/lol/spell/:id'
                 }
-                
-               
             },
             tft: {
                 all_champions: '/tft/champions',

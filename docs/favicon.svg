@@ -1,0 +1,43 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+
+  <defs>
+    <!-- Gradiente dorado -->
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8e7a8"/>
+      <stop offset="50%" stop-color="#d4a72c"/>
+      <stop offset="100%" stop-color="#8a6615"/>
+    </linearGradient>
+
+    <!-- Azul interior -->
+    <radialGradient id="blue" cx="50%" cy="50%" r="65%">
+      <stop offset="0%" stop-color="#41d6db"/>
+      <stop offset="100%" stop-color="#083a47"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Círculo -->
+  <circle cx="256" cy="256" r="185" fill="url(#blue)"/>
+  <circle cx="256" cy="256" r="205" fill="none" stroke="url(#gold)" stroke-width="22"/>
+
+  <!-- Texto -->
+  <g text-anchor="middle"
+     font-family="Cinzel, Trajan Pro, serif"
+     font-weight="900"
+     fill="url(#gold)"
+     stroke="#000">
+
+    <text x="256" y="230" font-size="44" stroke-width="2">
+      LEAGUE OF
+    </text>
+
+    <text x="256" y="295" font-size="70" stroke-width="3">
+      LEGENDS
+    </text>
+
+    <text x="256" y="360" font-size="50" stroke-width="3">
+      API
+    </text>
+
+  </g>
+
+</svg>
